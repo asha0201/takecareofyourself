@@ -326,7 +326,7 @@
 		/* Ajax call to submit form */
 		$.ajax({
 			type: "POST",
-			url: "form-appointment.php",
+			url: "process_appointment.php",
 			data: $appointmentForm.serialize(),
 			success : function(text){
 				if (text === "success"){
