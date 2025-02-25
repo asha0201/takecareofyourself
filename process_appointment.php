@@ -1,54 +1,56 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2757
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+<?php
+// Allow Cross-Origin Requests (CORS)
+header("Access-Control-Allow-Origin: *"); // Change '*' to your domain for security
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-\f0\fs24 \cf0 <?php\
-header("Access-Control-Allow-Origin: *"); // Allow requests from any origin (for security, replace * with your domain)\
-header("Access-Control-Allow-Methods: POST, OPTIONS"); // Allow POST and preflight OPTIONS request\
-header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Allow necessary headers\
-\
-// Handle preflight request\
-if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") \{\
-    http_response_code(200);\
-    exit();\
-\}\
-?>\
-\
-\
-\
-<?php\
-if ($_SERVER["REQUEST_METHOD"] == "POST") \{\
-    $fname = $_POST['fname'];\
-    $lname = $_POST['lname'];\
-    $email = $_POST['email'];\
-    $phone = $_POST['phone'];\
-    $services = $_POST['services'];\
-    $date = $_POST['date'];\
-\
-    $to = "youmatter@takecareofyourself.in\'94; // Change to your email\
-    $subject = "New Appointment Booking";\
-    $headers = "From: " . $email . "\\r\\n";\
-    $headers .= "Reply-To: " . $email . "\\r\\n";\
-    $headers .= "Content-Type: text/plain; charset=UTF-8\\r\\n";\
-\
-    $message = "New Appointment Details:\\n\\n";\
-    $message .= "First Name: $fname\\n";\
-    $message .= "Last Name: $lname\\n";\
-    $message .= "Email: $email\\n";\
-    $message .= "Phone: $phone\\n";\
-    $message .= "Service: $services\\n";\
-    $message .= "Preferred Date: $date\\n";\
-\
-    if (mail($to, $subject, $message, $headers)) \{\
-        echo "Appointment request sent successfully!";\
-    \} else \{\
-        echo "Error sending appointment request.";\
-    \}\
-\} else \{\
-    echo "Invalid request.";\
-\}\
-?>\
+// Handle preflight OPTIONS request
+if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
+    http_response_code(200);
+    exit();
 }
+
+// Process POST request
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Retrieve form data safely
+    $fname = isset($_POST['fname']) ? trim($_POST['fname']) : '';
+    $lname = isset($_POST['lname']) ? trim($_POST['lname']) : '';
+    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+    $phone = isset($_POST['phone']) ? trim($_POST['phone']) : '';
+    $services = isset($_POST['services']) ? trim($_POST['services']) : '';
+    $date = isset($_POST['date']) ? trim($_POST['date']) : '';
+
+    // Validate required fields
+    if (empty($fname) || empty($lname) || empty($email) || empty($phone) || empty($services) || empty($date)) {
+        echo "All fields are required.";
+        exit();
+    }
+
+    // Set recipient email
+    $to = "youmatter@takecareofyourself.in"; // Change to your actual email
+    $subject = "New Appointment Booking";
+    
+    // Email headers
+    $headers = "From: $email\r\n";
+    $headers .= "Reply-To: $email\r\n";
+    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+
+    // Email message
+    $message = "New Appointment Details:\n\n";
+    $message .= "First Name: $fname\n";
+    $message .= "Last Name: $lname\n";
+    $message .= "Email: $email\n";
+    $message .= "Phone: $phone\n";
+    $message .= "Service: $services\n";
+    $message .= "Preferred Date: $date\n";
+
+    // Send email
+    if (mail($to, $subject, $message, $headers)) {
+        echo "Appointment request sent successfully!";
+    } else {
+        echo "Error sending appointment request.";
+    }
+} else {
+    echo "Invalid request.";
+}
+?>
